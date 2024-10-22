@@ -5,6 +5,9 @@ using UnityEngine;
 public class Waypoints : MonoBehaviour
 {
     public static Transform[] points;
+    public bool isBranchPoint;  // Does this waypoint allow route changes?
+    public Waypoints[] connectedWaypoints;  // All possible connected waypoints
+    public Waypoints[] restrictedNextWaypoints;  // Restricted next waypoints, if any
 
     private void Awake()
     {
