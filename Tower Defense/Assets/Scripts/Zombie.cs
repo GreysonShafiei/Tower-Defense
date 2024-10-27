@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,70 +5,98 @@ using UnityEngine;
 public class Zombie : MonoBehaviour
 {
     public float speed = 10f;
-
-    private Transform target;
-    private int wayPointIndex = 0;
-    private List<Transform> traversedWaypoints = new List<Transform>();
+    public float rotationSpeed = 5f; // Speed at which the zombie rotates
+    protected Transform target;
+    protected List<Transform> traversedPoints = new List<Transform>(); // Keeps track of visited waypoints
+    protected Transform selectedBranch;
 
     private void Start()
     {
-        target = Waypoints.points[0];
+        target = Waypoints.points[0]; // Starting point
+        UpdateTargetBranch(target);   // Initialize the branch for the first waypoint
     }
 
     private void Update()
     {
-        moveTowardsEnd();
-    }
-
-    void moveTowardsEnd()
-    {
-        if (target == null) return;
-
+        // Calculate the direction vector toward the target waypoint
         Vector3 dir = target.position - transform.position;
+
+        // Move toward the target
         transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);
 
-        if (Vector3.Distance(transform.position, target.transform.position) <= 0.4f)
+        // Rotate to face the direction of movement
+        RotateTowardsMovementDirection(dir);
+
+        // If the zombie is close to the target waypoint, move to the next waypoint
+        if (Vector3.Distance(transform.position, target.position) <= 0.4f)
         {
-            chooseNextWaypoint();
+            traversedPoints.Add(target); // Mark the current target as traversed
+            GetNextWayPoint();           // Move to the next branch or waypoint
         }
     }
 
-    void chooseNextWaypoint()
+    public void RotateTowardsMovementDirection(Vector3 direction)
     {
-        // Get the Waypoints component from the current target Transform
-        Waypoints waypointComponent = target.GetComponent<Waypoints>();
-        Boolean alreadyTraversed = false;
-        foreach (Waypoints connectedWaypoint in waypointComponent.connectedWaypoints)
+        // Check if the direction is valid (we don't want to rotate if the zombie is not moving)
+        if (direction != Vector3.zero)
         {
-            if (traversedWaypoints.Contains(connectedWaypoint.transform))
+            // Create a target rotation based on the direction vector
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+            // Smoothly rotate towards the target direction
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+    }
+
+    public void GetNextWayPoint()
+    {
+        // Check if the current target is a branching node
+        BranchingNodes branchingNode = target.GetComponent<BranchingNodes>();
+
+        if (branchingNode != null)
+        {
+            // Check if the selected branch has already been traversed
+            if (traversedPoints.Contains(branchingNode.selectedBranch))
             {
-                alreadyTraversed = true;
-                break;
-            }
-        }
+                // Find an unvisited branch
+                List<Transform> availableBranches = new List<Transform>();
+                foreach (Transform branch in branchingNode.potentialBranches)
+                {
+                    if (!traversedPoints.Contains(branch))
+                    {
+                        availableBranches.Add(branch);
+                    }
+                }
 
-        if (waypointComponent != null && waypointComponent.isBranchPoint && alreadyTraversed == false)
-        {
-            // Select one of the connected waypoints at random
-            target = waypointComponent.connectedWaypoints[UnityEngine.Random.Range(0, waypointComponent.connectedWaypoints.Length)].transform;
-        }
-        else if (waypointComponent != null && waypointComponent.restrictedNextWaypoints.Length > 0)
-        {
-            // Only move to restricted next waypoints
-            target = waypointComponent.restrictedNextWaypoints[0].transform;
-        }
-        else
-        {
-            if (wayPointIndex >= Waypoints.points.Length - 1)
+                // If there are available branches, choose one randomly
+                if (availableBranches.Count > 0)
+                {
+                    selectedBranch = availableBranches[UnityEngine.Random.Range(0, availableBranches.Count)];
+                }
+                else
+                {
+                    // All branches traversed, destroy zombie
+                    Destroy(gameObject);
+                    return;
+                }
+            }
+            else
             {
-                Destroy(gameObject);
-                return;
+                // Use the current branch if it hasn't been traversed yet
+                selectedBranch = branchingNode.selectedBranch;
             }
 
-            wayPointIndex++;
-            target = Waypoints.points[wayPointIndex];
+            target = selectedBranch; // Move to the next waypoint (branch)
         }
+    }
 
-        traversedWaypoints.Add(target);
+    public void UpdateTargetBranch(Transform waypoint)
+    {
+        // Update the target branch for the current waypoint
+        BranchingNodes branchingNode = waypoint.GetComponent<BranchingNodes>();
+        if (branchingNode != null)
+        {
+            selectedBranch = branchingNode.selectedBranch;
+        }
     }
 }
