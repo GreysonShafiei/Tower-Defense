@@ -2,50 +2,57 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ZombieFollower : Zombie
+public class ZombieFollower : MonoBehaviour
 {
-    private ZombieLeader leader;
-    private List<Transform> leaderWaypoints;
-    private int currentWaypointIndex = 0;
+    public float speed = 10f;
+    public float rotationSpeed = 5f;
 
-    public void SetLeader(ZombieLeader newLeader)
+    private List<Transform> pathToFollow = new List<Transform>(); // Path provided by the leader
+    private int currentWaypointIndex = 0; // Track which waypoint the follower is heading towards
+
+    public void SetLeader(ZombieLeader leader)
     {
-        leader = newLeader; // Set the leader for the follower
-        leaderWaypoints = newLeader.GetTraversedWaypoints(); // Get the leader's waypoints
-        if (leaderWaypoints.Count > 0)
+        // Set the path to follow to match the leader's path
+        pathToFollow = new List<Transform>(leader.pathTaken);
+        currentWaypointIndex = 0; // Reset the waypoint index to start following from the beginning
+    }
+
+    public void UpdatePath(List<Transform> updatedPath)
+    {
+        // Only update the path if there are new waypoints to follow
+        if (updatedPath.Count > pathToFollow.Count)
         {
-            target = leaderWaypoints[0]; // Set the first waypoint for the follower
+            pathToFollow = new List<Transform>(updatedPath);
         }
     }
 
     private void Update()
     {
-        if (leader != null && leaderWaypoints != null && currentWaypointIndex < leaderWaypoints.Count)
+        if (pathToFollow.Count > currentWaypointIndex)
         {
-            // Move towards the current waypoint in the leader's traversed waypoints
-            MoveTowardsTarget();
+            // Follow the path by moving towards each waypoint in sequence
+            Transform currentWaypoint = pathToFollow[currentWaypointIndex];
 
-            // Check if the follower reached the current waypoint
-            if (Vector3.Distance(transform.position, target.position) <= 0.4f)
+            Vector3 dir = currentWaypoint.position - transform.position;
+            transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);
+
+            // Rotate to face the direction of movement
+            RotateTowardsMovementDirection(dir);
+
+            // If the follower reaches the current waypoint, move to the next waypoint
+            if (Vector3.Distance(transform.position, currentWaypoint.position) <= 0.4f)
             {
                 currentWaypointIndex++;
-                if (currentWaypointIndex < leaderWaypoints.Count)
-                {
-                    target = leaderWaypoints[currentWaypointIndex]; // Move to the next waypoint in the leader's path
-                }
             }
         }
     }
 
-    private void MoveTowardsTarget()
+    void RotateTowardsMovementDirection(Vector3 direction)
     {
-        // Calculate the direction vector toward the target waypoint
-        Vector3 dir = target.position - transform.position;
-
-        // Move toward the target
-        transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);
-
-        // Rotate to face the movement direction
-        RotateTowardsMovementDirection(dir);
+        if (direction != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
     }
 }

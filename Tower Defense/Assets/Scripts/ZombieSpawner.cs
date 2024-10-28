@@ -69,7 +69,7 @@ public class ZombieSpawner : MonoBehaviour
         {
             follower.SetLeader(currentLeader); // Use SetLeader to assign the current leader
             currentFollowers.Add(follower); // Add follower to the leader's follower list
-            currentLeader.followers = currentFollowers; // Update the leader's follower list
+            currentLeader.followers.Add(follower); // Update the leader's follower list
         }
     }
 }

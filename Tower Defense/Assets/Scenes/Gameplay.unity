@@ -13113,7 +13113,7 @@ MonoBehaviour:
   zombieFollowerPrefab: {fileID: 3103619455510245640, guid: bfc092d27832c86469a801b981c9c297, type: 3}
   spawnPoints:
   - {fileID: 1854113901}
-  spawnDelay: 2
+  spawnDelay: 0.7
 --- !u!4 &1796573040
 Transform:
   m_ObjectHideFlags: 0
