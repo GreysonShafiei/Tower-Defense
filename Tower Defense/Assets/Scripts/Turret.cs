@@ -74,17 +74,11 @@ public class Turret : MonoBehaviour
     void Fire()
     {
         GameObject bulletFollow = (GameObject) Instantiate(bulletType, fireLocation.position, fireLocation.rotation);
-        Debug.Log("Bullet instantiated: " + bulletFollow.name);
         Bullet bullet  = bulletFollow.GetComponent<Bullet>();
 
         if (bullet != null)
         {
-            Debug.Log("Assigning target to bullet: " + target.name);
             bullet.Follow(target);
-        }
-        else
-        {
-            Debug.LogError("Bullet component not found on instantiated object.");
         }
     }
 

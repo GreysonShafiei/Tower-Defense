@@ -8,6 +8,7 @@ public class ZombieSpawner : MonoBehaviour
     public GameObject zombieLeaderPrefab;  // Reference to the zombie leader prefab
     public GameObject zombieFollowerPrefab;  // Reference to the zombie follower prefab
     public Transform spawnPoint;  // Array of spawn points in the scene
+    public Transform SpawnedZombies; // What object to spawn the zombies as a child of
     public float spawnDelay = 2f;    // Delay between spawns
 
     public TextMeshProUGUI CountDownText;
@@ -49,7 +50,7 @@ public class ZombieSpawner : MonoBehaviour
     void SpawnLeader(Vector3 spawnPosition)
     {
         // Instantiate a new zombie leader at the specified spawn position
-        GameObject newZombieLeader = Instantiate(zombieLeaderPrefab, spawnPosition, Quaternion.identity, transform);
+        GameObject newZombieLeader = Instantiate(zombieLeaderPrefab, spawnPosition, Quaternion.identity, SpawnedZombies);
 
         // Get the ZombieLeader component
         currentLeader = newZombieLeader.GetComponent<ZombieLeader>();
@@ -61,7 +62,7 @@ public class ZombieSpawner : MonoBehaviour
     void SpawnFollower(Vector3 spawnPosition)
     {
         // Instantiate a new zombie follower at the specified spawn position
-        GameObject newZombieFollower = Instantiate(zombieFollowerPrefab, spawnPosition, Quaternion.identity, transform);
+        GameObject newZombieFollower = Instantiate(zombieFollowerPrefab, spawnPosition, Quaternion.identity, SpawnedZombies);
 
         // Get the ZombieFollower component and set the leader as its target
         ZombieFollower follower = newZombieFollower.GetComponent<ZombieFollower>();

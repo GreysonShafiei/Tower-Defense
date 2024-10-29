@@ -5,6 +5,7 @@ using UnityEngine;
 public class EndNodeScript : MonoBehaviour
 {
     public float health = 100f; // Starting health of the end node
+    public GameObject SpawnedZombies; // Holds all of the zombies
 
     // Start is called before the first frame update
     void Start()
@@ -45,6 +46,8 @@ public class EndNodeScript : MonoBehaviour
     // What happens when the end node's health reaches 0
     void OnEndNodeDestroyed()
     {
+        Destroy(SpawnedZombies);
+        Destroy(gameObject);
         Debug.Log("End Node has been destroyed!");
     }
 }

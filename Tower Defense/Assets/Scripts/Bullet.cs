@@ -7,12 +7,11 @@ public class Bullet : MonoBehaviour
 {
     private Transform target;
     public float speed = 50f;
+    public GameObject impactEffect;
 
     public void Follow(Transform turretTarget)
     {
         target = turretTarget;
-        Debug.Log("Bullet is moving towards target: " + target.name + " with speed: " + speed);
-
     }
 
     // Start is called before the first frame update
@@ -44,7 +43,9 @@ public class Bullet : MonoBehaviour
 
     void Hit()
     {
-        Debug.Log("HIT!!!!!!!!!");
-        Destroy(gameObject);
+        GameObject eff = Instantiate(impactEffect, transform.position, transform.rotation);
+        Destroy(eff, 2f);
+
+        Destroy(gameObject); // Destroy bullet
     }
 }

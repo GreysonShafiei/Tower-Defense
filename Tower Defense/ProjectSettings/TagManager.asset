@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Enemy
   - End
+  - Turret
   layers:
   - Default
   - TransparentFX

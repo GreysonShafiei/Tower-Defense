@@ -15,7 +15,7 @@ GameObject:
   m_Icon: {fileID: 7866945982896999795, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4663976017401294493
 Transform:
   m_ObjectHideFlags: 0
@@ -245,7 +245,7 @@ GameObject:
   - component: {fileID: 63619150806424506}
   m_Layer: 0
   m_Name: Turret 1
-  m_TagString: Untagged
+  m_TagString: Turret
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -283,7 +283,7 @@ MonoBehaviour:
   health: 100
   fireRate: 1
   rotate: {fileID: 3380408894232210239}
-  rotateSpeed: 10
+  rotateSpeed: 15
   enemyTag: Enemy
   bulletType: {fileID: 93399950681531007, guid: 0dc62f70ef0e0fd46a1339f65256f952, type: 3}
   fireLocation: {fileID: 4663976017401294493}

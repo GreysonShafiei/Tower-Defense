@@ -4,15 +4,32 @@ using UnityEngine;
 
 public class ZombieFollower : MonoBehaviour
 {
-    public float speed = 10f;
-    public float rotationSpeed = 5f;
+    
+    
 
     private Transform endNode; // Reference to the EndNode
     private List<Transform> pathToFollow = new List<Transform>(); // Path provided by the leader
     private int currentWaypointIndex = 0; // Track which waypoint the follower is heading towards
 
+    private Transform target;
+
+    [Header("Attributes")]
+    public float range = 15f; //Turret Range
+    public float health = 50f; // Health
+    public float fireRate = 1f;
+    private float fireCountDown = 0f;
+
+    [Header("Setup")]
+    public Transform rotate;
+    public float speed = 10f;
+    public float rotationSpeed = 5f;
+    public string turretObj = "Turret";
+    public GameObject bulletType;
+    public Transform fireLocation;
+    
     void Start()
     {
+        InvokeRepeating("TargetUpdate", 0f, 0.5f);
         // Find the EndNode by its tag
         GameObject endNodeObject = GameObject.FindGameObjectWithTag("End");
         if (endNodeObject != null)
@@ -66,6 +83,37 @@ public class ZombieFollower : MonoBehaviour
                 currentWaypointIndex++;
             }
         }
+
+        if (target == null || Vector3.Distance(transform.position, target.position) > range)
+        {
+            target = null;
+            return;
+        }
+
+        Vector3 direct = target.position - transform.position;
+        Quaternion rotationLook = Quaternion.LookRotation(direct);
+        Vector3 rotation = Quaternion.Lerp(rotate.rotation, rotationLook, Time.deltaTime * rotationSpeed).eulerAngles;
+        rotate.rotation = Quaternion.Euler(0f, rotation.y, 0f); //Rotate towards enemy
+
+        if (fireCountDown <=0)
+        {
+            Fire();
+            fireCountDown = 1f/ fireRate;
+        }
+
+        fireCountDown -= Time.deltaTime;
+    
+    }
+
+    void Fire()
+    {
+        GameObject bulletFollow = (GameObject)Instantiate(bulletType, fireLocation.position, fireLocation.rotation);
+        Bullet bullet = bulletFollow.GetComponent<Bullet>();
+
+        if (bullet != null)
+        {
+            bullet.Follow(target);
+        }
     }
 
     void RotateTowardsMovementDirection(Vector3 direction)
@@ -74,6 +122,28 @@ public class ZombieFollower : MonoBehaviour
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+    }
+
+    void TargetUpdate()
+    {
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag(turretObj);
+        float closestDistance = Mathf.Infinity;
+        GameObject closestEnemy = null;
+
+        foreach (GameObject enemy in enemies)
+        {
+            float enemyDistance = Vector3.Distance(transform.position, enemy.transform.position);
+            if (enemyDistance < closestDistance)
+            {
+                closestDistance = enemyDistance;
+                closestEnemy = enemy;
+            }
+        }
+
+        if (closestEnemy != null && closestDistance <= range)
+        {
+            target = closestEnemy.transform;
         }
     }
 }
