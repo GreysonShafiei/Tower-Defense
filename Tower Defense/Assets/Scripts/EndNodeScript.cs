@@ -46,6 +46,5 @@ public class EndNodeScript : MonoBehaviour
     void OnEndNodeDestroyed()
     {
         Debug.Log("End Node has been destroyed!");
-        // Trigger any game over or victory condition here, like ending the game
     }
 }

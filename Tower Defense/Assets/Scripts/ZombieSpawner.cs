@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class ZombieSpawner : MonoBehaviour
 {
     public GameObject zombieLeaderPrefab;  // Reference to the zombie leader prefab
     public GameObject zombieFollowerPrefab;  // Reference to the zombie follower prefab
-    public Transform[] spawnPoints;  // Array of spawn points in the scene
+    public Transform spawnPoint;  // Array of spawn points in the scene
     public float spawnDelay = 2f;    // Delay between spawns
+
+    public TextMeshProUGUI CountDownText;
 
     private int zombieCount = 0; // Counter to track how many zombies have been spawned
     private ZombieLeader currentLeader; // Reference to the current leader zombie
@@ -25,9 +28,6 @@ public class ZombieSpawner : MonoBehaviour
         {
             // Delay between spawns
             yield return new WaitForSeconds(spawnDelay);
-
-            // Choose a random spawn point
-            Transform spawnPoint = spawnPoints[UnityEngine.Random.Range(0, spawnPoints.Length)];
 
             // Every 5th zombie will be a leader
             if (zombieCount % 5 == 0)
@@ -71,5 +71,40 @@ public class ZombieSpawner : MonoBehaviour
             currentFollowers.Add(follower); // Add follower to the leader's follower list
             currentLeader.followers.Add(follower); // Update the leader's follower list
         }
+    }
+
+
+    public float timeBetweenWaves = 5f;
+    private float countdown = 2f;
+
+    private int waveNum;
+
+    private void Update()
+    {
+        if (countdown <= 0f)
+        {
+            StartCoroutine(WaveSpawn());
+            countdown = timeBetweenWaves;
+        }
+        countdown -= Time.deltaTime;
+
+        CountDownText.text = Mathf.Round(countdown).ToString();
+    }
+
+    IEnumerator WaveSpawn()
+    {
+        for (int i = 0; i < waveNum; i++)
+        {
+            EnemySpawn();
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        waveNum++;
+    }
+
+    void EnemySpawn()
+    {
+        //Instantiate(enemyLeaderPrefab, spawnPosition, Quaternion.identity, transform);
+        //Instantiate(enemyFollowerPrefab, spawnPosition, Quaternion.identity, transform);
     }
 }

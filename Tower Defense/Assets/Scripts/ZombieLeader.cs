@@ -36,12 +36,6 @@ public class ZombieLeader : MonoBehaviour
             traversedPoints.Add(target); // Mark the current target as traversed
             pathTaken.Add(target); // Add this target to the leader's path
 
-            // Update the followers' path to match the leader's path
-            foreach (ZombieFollower follower in followers)
-            {
-                follower.UpdatePath(pathTaken);
-            }
-
             GetNextWayPoint();           // Move to the next branch or waypoint
         }
     }
@@ -57,10 +51,12 @@ public class ZombieLeader : MonoBehaviour
 
     void GetNextWayPoint()
     {
+        // Check for branching nodes
         BranchingNodes branchingNode = target.GetComponent<BranchingNodes>();
 
         if (branchingNode != null)
         {
+            // If the branch has already been traversed, pick an alternative
             if (traversedPoints.Contains(branchingNode.selectedBranch))
             {
                 List<Transform> availableBranches = new List<Transform>();
@@ -84,15 +80,25 @@ public class ZombieLeader : MonoBehaviour
             }
             else
             {
+                // Use the existing branch if it hasn't been traversed yet
                 selectedBranch = branchingNode.selectedBranch;
             }
 
+            // Set the next waypoint as the target
             target = selectedBranch;
+
+            // Immediately update followers' paths before the leader starts moving toward the new target
+            pathTaken.Add(target); // Add the next target to the leader's path
+            foreach (ZombieFollower follower in followers)
+            {
+                follower.UpdatePath(pathTaken);
+            }
         }
     }
 
     void UpdateTargetBranch(Transform waypoint)
     {
+        // Update the branch to follow based on the next waypoint
         BranchingNodes branchingNode = waypoint.GetComponent<BranchingNodes>();
         if (branchingNode != null)
         {

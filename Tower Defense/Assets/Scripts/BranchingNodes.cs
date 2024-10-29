@@ -36,8 +36,5 @@ public class BranchingNodes : MonoBehaviour
         {
             selectedBranch = potentialBranches.Length > 0 ? potentialBranches[0] : null;
         }
-
-        // Optionally, log this to see branch updates in the console
-        Debug.Log("Updated branches for waypoint: " + gameObject.name + " - Selected branch: " + selectedBranch?.name);
     }
 }
