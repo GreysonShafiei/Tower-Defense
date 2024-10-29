@@ -7,8 +7,19 @@ public class ZombieFollower : MonoBehaviour
     public float speed = 10f;
     public float rotationSpeed = 5f;
 
+    private Transform endNode; // Reference to the EndNode
     private List<Transform> pathToFollow = new List<Transform>(); // Path provided by the leader
     private int currentWaypointIndex = 0; // Track which waypoint the follower is heading towards
+
+    void Start()
+    {
+        // Find the EndNode by its tag
+        GameObject endNodeObject = GameObject.FindGameObjectWithTag("End");
+        if (endNodeObject != null)
+        {
+            endNode = endNodeObject.transform; // Assign the EndNode's transform
+        }
+    }
 
     public void SetLeader(ZombieLeader leader)
     {
@@ -28,6 +39,16 @@ public class ZombieFollower : MonoBehaviour
 
     private void Update()
     {
+        if (endNode == null) return; // Ensure the EndNode has been found
+
+        // Check if the follower has reached the EndNode
+        if (Vector3.Distance(transform.position, endNode.position) <= 0.4f)
+        {
+            // Destroy the zombie follower upon reaching the end node
+            Destroy(gameObject);
+            return; // Exit Update to avoid further execution
+        }
+
         if (pathToFollow.Count > currentWaypointIndex)
         {
             // Follow the path by moving towards each waypoint in sequence

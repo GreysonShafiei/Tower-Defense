@@ -10,17 +10,35 @@ public class ZombieLeader : MonoBehaviour
     private List<Transform> traversedPoints = new List<Transform>(); // Keeps track of visited waypoints
     private Transform selectedBranch;
 
+    private Transform endNode; // Reference to the EndNode
     public List<Transform> pathTaken = new List<Transform>(); // The path that the leader has taken
     public List<ZombieFollower> followers = new List<ZombieFollower>(); // List of followers
 
     void Start()
     {
+        // Find the EndNode by its tag
+        GameObject endNodeObject = GameObject.FindGameObjectWithTag("End");
+        if (endNodeObject != null)
+        {
+            endNode = endNodeObject.transform; // Assign the EndNode's transform
+        }
+
         target = Waypoints.points[0]; // Starting point
         UpdateTargetBranch(target);   // Initialize the branch for the first waypoint
     }
 
     private void Update()
     {
+        if (endNode == null) return; // Ensure the EndNode has been found
+
+        // Check if the zombie has reached the EndNode
+        if (Vector3.Distance(transform.position, endNode.position) <= 0.4f)
+        {
+            // Destroy the zombie leader upon reaching the end node
+            Destroy(gameObject);
+            return; // Exit Update to avoid further execution
+        }
+
         // Calculate the direction vector toward the target waypoint
         Vector3 dir = target.position - transform.position;
 
