@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EndNodeScript : MonoBehaviour
 {
@@ -48,6 +49,7 @@ public class EndNodeScript : MonoBehaviour
     {
         Destroy(SpawnedZombies);
         Destroy(gameObject);
+        SceneManager.LoadScene("GameOver");
         Debug.Log("End Node has been destroyed!");
     }
 }
