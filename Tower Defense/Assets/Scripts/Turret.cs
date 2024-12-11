@@ -8,7 +8,7 @@ public class Turret : MonoBehaviour
 
     [Header("Attributes")]
     public float range = 15f; //Turret Range
-    public int health = 100; //Turret's Health
+    public float health = 100; //Turret's Health
     public float fireRate = 1f;
     private float fireCountDown = 0f;
 
@@ -86,5 +86,20 @@ public class Turret : MonoBehaviour
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, range);
+    }
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage; // Decrease health
+        if (health <= 0f)
+        {
+            Die(); // Call the death method
+        }
+    }
+
+    // Destroy Turret
+    void Die()
+    {
+        Destroy(gameObject);
     }
 }

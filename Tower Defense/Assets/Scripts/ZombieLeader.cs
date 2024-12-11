@@ -15,6 +15,8 @@ public class ZombieLeader : MonoBehaviour
     public List<Transform> pathTaken = new List<Transform>(); // The path that the leader has taken
     public List<ZombieFollower> followers = new List<ZombieFollower>(); // List of followers
 
+    GameManager GameManager;
+
     void Start()
     {
         // Find the EndNode by its tag
@@ -124,4 +126,27 @@ public class ZombieLeader : MonoBehaviour
             selectedBranch = branchingNode.selectedBranch;
         }
     }
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage; // Decrease health
+        if (health <= 0f)
+        {
+            Die(); // Call the death method
+        }
+    }
+
+    // Despawn the zombie
+    void Die()
+    {
+        // Add cash to the GameManager
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.cash += 75;
+        }
+
+        // Destroy this game object
+        Destroy(gameObject);
+    }
+
 }

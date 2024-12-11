@@ -281,7 +281,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   range: 15
   health: 100
-  fireRate: 1
+  fireRate: 4
   rotate: {fileID: 3380408894232210239}
   rotateSpeed: 15
   enemyTag: Enemy

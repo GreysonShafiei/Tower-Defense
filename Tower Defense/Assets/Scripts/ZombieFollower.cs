@@ -12,6 +12,7 @@ public class ZombieFollower : MonoBehaviour
     private int currentWaypointIndex = 0; // Track which waypoint the follower is heading towards
 
     private Transform target;
+    GameManager GameManager;
 
     [Header("Attributes")]
     public float range = 15f; //Turret Range
@@ -146,4 +147,27 @@ public class ZombieFollower : MonoBehaviour
             target = closestEnemy.transform;
         }
     }
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage; // Decrease health
+        if (health <= 0f)
+        {
+            Die(); // Call the death method
+        }
+    }
+
+    // Despawn the zombie
+    void Die()
+    {
+        // Add cash to the GameManager
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.cash += 25;
+        }
+
+        // Destroy this game object
+        Destroy(gameObject);
+    }
+
 }

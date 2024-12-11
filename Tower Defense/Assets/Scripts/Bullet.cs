@@ -7,6 +7,7 @@ public class Bullet : MonoBehaviour
 {
     private Transform target;
     public float speed = 50f;
+    public float Damage = 5f;
     public GameObject impactEffect;
 
     public void Follow(Transform turretTarget)
@@ -46,6 +47,25 @@ public class Bullet : MonoBehaviour
         GameObject eff = Instantiate(impactEffect, transform.position, transform.rotation);
         Destroy(eff, 2f);
 
-        Destroy(gameObject); // Destroy bullet
+        // Check if the target has a Zombie or ZombieLeader component
+        ZombieFollower zombieFollower = target.GetComponent<ZombieFollower>();
+        ZombieLeader zombieLeader = target.GetComponent<ZombieLeader>();
+        Turret turret = target.GetComponent<Turret>();
+
+        if (zombieFollower != null)
+        {
+            zombieFollower.TakeDamage(Damage); // Apply damage to the zombie
+        }
+        else if (zombieLeader != null)
+        {
+            zombieLeader.TakeDamage(Damage); // Apply damage to the zombie leader
+
+        }
+        else if (turret != null)
+        {
+            turret.TakeDamage(Damage);
+        }
+
+        Destroy(gameObject); // Destroy the bullet
     }
 }
