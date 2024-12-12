@@ -13,6 +13,7 @@ public class ZombieSpawner : MonoBehaviour
 
     public TextMeshProUGUI CountDownText;
 
+    private int waveCounter = 0;
     private int zombieCount = 0; // Counter to track how many zombies have been spawned
     private ZombieLeader currentLeader; // Reference to the current leader zombie
     private List<ZombieFollower> currentFollowers = new List<ZombieFollower>(); // List of followers for the current leader
@@ -44,6 +45,28 @@ public class ZombieSpawner : MonoBehaviour
 
             // Increment zombie count after spawning
             zombieCount++;
+            waveCounter++;
+            // Increase health every 5 waves
+            if (waveCounter % 5 == 0)
+            {
+                IncreaseZombieHealth();
+            }
+        }
+    }
+
+    void IncreaseZombieHealth()
+    {
+        // Adjust the health values for the leader and follower prefabs
+        ZombieLeader leader = zombieLeaderPrefab.GetComponent<ZombieLeader>();
+        if (leader != null)
+        {
+            leader.health += 25f; // Increase leader's health by 25 (example value)
+        }
+
+        ZombieFollower follower = zombieFollowerPrefab.GetComponent<ZombieFollower>();
+        if (follower != null)
+        {
+            follower.health += 15f; // Increase follower's health by 15 (example value)
         }
     }
 
@@ -72,40 +95,5 @@ public class ZombieSpawner : MonoBehaviour
             currentFollowers.Add(follower); // Add follower to the leader's follower list
             currentLeader.followers.Add(follower); // Update the leader's follower list
         }
-    }
-
-
-    public float timeBetweenWaves = 5f;
-    private float countdown = 2f;
-
-    private int waveNum;
-
-    private void Update()
-    {
-        if (countdown <= 0f)
-        {
-            StartCoroutine(WaveSpawn());
-            countdown = timeBetweenWaves;
-        }
-        countdown -= Time.deltaTime;
-
-        CountDownText.text = Mathf.Round(countdown).ToString();
-    }
-
-    IEnumerator WaveSpawn()
-    {
-        for (int i = 0; i < waveNum; i++)
-        {
-            EnemySpawn();
-            yield return new WaitForSeconds(0.5f);
-        }
-
-        waveNum++;
-    }
-
-    void EnemySpawn()
-    {
-        //Instantiate(enemyLeaderPrefab, spawnPosition, Quaternion.identity, transform);
-        //Instantiate(enemyFollowerPrefab, spawnPosition, Quaternion.identity, transform);
     }
 }

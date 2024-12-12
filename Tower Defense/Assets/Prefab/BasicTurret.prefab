@@ -280,7 +280,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   range: 15
-  health: 80
+  health: 50
   fireRate: 4
   cost: 375
   rotate: {fileID: 3380408894232210239}

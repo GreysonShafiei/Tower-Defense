@@ -18,7 +18,7 @@ public class ZombieFollower : MonoBehaviour
 
     [Header("Attributes")]
     public float range = 15f; //Turret Range
-    public float health = 50f; // Health
+    public float health = 75f; // Health
     public float fireRate = 1f;
     private float fireCountDown = 0f;
 

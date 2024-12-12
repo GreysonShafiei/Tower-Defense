@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ZombieLeader : MonoBehaviour
 {
-    public float health = 100f;
+    public float health = 175f;
     public float speed = 10f;
     public float rotationSpeed = 5f; // Speed at which the zombie rotates
     private Transform target;
