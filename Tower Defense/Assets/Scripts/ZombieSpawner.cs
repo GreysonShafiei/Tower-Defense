@@ -47,7 +47,7 @@ public class ZombieSpawner : MonoBehaviour
             zombieCount++;
             waveCounter++;
             // Increase health every 5 waves
-            if (waveCounter % 5 == 0)
+            if (waveCounter % 25 == 0)
             {
                 IncreaseZombieHealth();
             }
