@@ -10,12 +10,14 @@ public class Turret : MonoBehaviour
     public float range = 15f; //Turret Range
     public float health = 100; //Turret's Health
     public float fireRate = 1f;
+    public float cost = 100;
     private float fireCountDown = 0f;
 
     [Header("Setup")]
     public Transform rotate; //Rotating piece of turret
     public float rotateSpeed = 10f;
-    public string enemyTag = "Enemy";
+    public string leaderTag = "Leader";
+    public string followerTag = "Follower";
     public GameObject bulletType;
     public Transform fireLocation;
 
@@ -27,7 +29,12 @@ public class Turret : MonoBehaviour
 
     void TargetUpdate()
     {
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag(enemyTag);
+        List<GameObject> enemiesList = new List<GameObject>();
+
+        enemiesList.AddRange(GameObject.FindGameObjectsWithTag(followerTag));
+        enemiesList.AddRange(GameObject.FindGameObjectsWithTag(leaderTag));
+
+        GameObject[] enemies = enemiesList.ToArray();
         float closestDistance = Mathf.Infinity;
         GameObject closestEnemy = null;
 

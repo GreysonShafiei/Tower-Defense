@@ -7,6 +7,8 @@ TagManager:
   - Enemy
   - End
   - Turret
+  - Follower
+  - Leader
   layers:
   - Default
   - TransparentFX

@@ -11,6 +11,11 @@ public class ZombieLeader : MonoBehaviour
     private List<Transform> traversedPoints = new List<Transform>(); // Keeps track of visited waypoints
     private Transform selectedBranch;
 
+    public AudioClip deathSound;
+    private AudioSource audioSource;
+
+    private int killReward = 125;
+
     private Transform endNode; // Reference to the EndNode
     public List<Transform> pathTaken = new List<Transform>(); // The path that the leader has taken
     public List<ZombieFollower> followers = new List<ZombieFollower>(); // List of followers
@@ -28,6 +33,7 @@ public class ZombieLeader : MonoBehaviour
 
         target = Waypoints.points[0]; // Starting point
         UpdateTargetBranch(target);   // Initialize the branch for the first waypoint
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -139,14 +145,28 @@ public class ZombieLeader : MonoBehaviour
     // Despawn the zombie
     void Die()
     {
+        // Ensure all followers die
+        foreach (ZombieFollower follower in followers)
+        {
+            if (follower != null)
+            {
+                follower.DieSilently(); // Call a new method to handle death without rewards
+            }
+        }
+
         // Add cash to the GameManager
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.cash += 75;
+            GameManager.Instance.cash += killReward;
+        }
+
+        if (audioSource != null && deathSound != null)
+        {
+            audioSource.PlayOneShot(deathSound); // Play the death sound
         }
 
         // Destroy this game object
-        Destroy(gameObject);
+        Destroy(gameObject, 1f);
     }
 
 }

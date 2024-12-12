@@ -7,7 +7,7 @@ public class ZombieSpawner : MonoBehaviour
 {
     public GameObject zombieLeaderPrefab;  // Reference to the zombie leader prefab
     public GameObject zombieFollowerPrefab;  // Reference to the zombie follower prefab
-    public Transform spawnPoint;  // Array of spawn points in the scene
+    public Transform spawnPoint;  // Spawnpoint in the scene
     public Transform SpawnedZombies; // What object to spawn the zombies as a child of
     public float spawnDelay = 2f;    // Delay between spawns
 

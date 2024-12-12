@@ -5,8 +5,21 @@ using UnityEngine.SceneManagement;
 
 public class EndNodeScript : MonoBehaviour
 {
+    public static EndNodeScript Instance { get; private set; }
     public float health = 100f; // Starting health of the end node
     public GameObject SpawnedZombies; // Holds all of the zombies
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this; // Assign this instance to the static variable
+        }
+        else
+        {
+            Destroy(gameObject); // Destroy duplicate EndNodeScripts
+        }
+    }
 
     // Start is called before the first frame update
     void Start()

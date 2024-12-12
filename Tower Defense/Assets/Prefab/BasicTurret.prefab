@@ -244,7 +244,7 @@ GameObject:
   - component: {fileID: 3514425903122998926}
   - component: {fileID: 63619150806424506}
   m_Layer: 0
-  m_Name: Turret 1
+  m_Name: BasicTurret
   m_TagString: Turret
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -280,10 +280,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   range: 15
-  health: 100
+  health: 80
   fireRate: 4
+  cost: 375
   rotate: {fileID: 3380408894232210239}
   rotateSpeed: 15
-  enemyTag: Enemy
+  leaderTag: Leader
+  followerTag: Follower
   bulletType: {fileID: 93399950681531007, guid: 0dc62f70ef0e0fd46a1339f65256f952, type: 3}
   fireLocation: {fileID: 4663976017401294493}

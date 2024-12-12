@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class ZombieFollower : MonoBehaviour
 {
-    
-    
-
     private Transform endNode; // Reference to the EndNode
     private List<Transform> pathToFollow = new List<Transform>(); // Path provided by the leader
     private int currentWaypointIndex = 0; // Track which waypoint the follower is heading towards
 
     private Transform target;
     GameManager GameManager;
+
+    private int killReward = 25;
+
+    public AudioClip deathSound;
+    private AudioSource audioSource;
 
     [Header("Attributes")]
     public float range = 15f; //Turret Range
@@ -37,6 +39,8 @@ public class ZombieFollower : MonoBehaviour
         {
             endNode = endNodeObject.transform; // Assign the EndNode's transform
         }
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     public void SetLeader(ZombieLeader leader)
@@ -148,6 +152,7 @@ public class ZombieFollower : MonoBehaviour
         }
     }
 
+
     public void TakeDamage(float damage)
     {
         health -= damage; // Decrease health
@@ -163,11 +168,21 @@ public class ZombieFollower : MonoBehaviour
         // Add cash to the GameManager
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.cash += 25;
+            GameManager.Instance.cash += killReward;
+        }
+
+        if (audioSource != null && deathSound != null)
+        {
+            audioSource.PlayOneShot(deathSound); // Play the death sound
         }
 
         // Destroy this game object
-        Destroy(gameObject);
+        Destroy(gameObject, 1f);
+    }
+    public void DieSilently()
+    {
+        // Destroy this game object without adding cash to the GameManager
+        Destroy(gameObject, 1f);
     }
 
 }
